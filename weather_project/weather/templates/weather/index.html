@@ -1,0 +1,74 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hava Durumu Uygulaması</title>
+    <link rel="stylesheet" href="{% static 'weather/css/style.css' %}" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <header class="app-header">
+        <h1><i class="fas fa-cloud-sun"></i> Hava Durumu Uygulaması</h1>
+      </header>
+
+      <form method="post" id="weather-form" class="search-form">
+        {% csrf_token %}
+        <input
+          type="text"
+          name="city"
+          id="city-input"
+          class="search-input"
+          placeholder="Şehir adı girin"
+          required
+        />
+        <button type="submit" id="search-button" class="search-button">
+          <i class="fas fa-search"></i> Hava Durumunu Getir
+        </button>
+      </form>
+
+      {% if weather %}
+      <div class="weather-container">
+        <h2 class="city-name">{{ weather.city }}</h2>
+
+        <div class="weather-main">
+          <div class="temperature">{{ weather.temperature }}°</div>
+
+          <div class="weather-icon-desc">
+            <img
+              src="http://openweathermap.org/img/wn/{{ weather.icon }}@2x.png"
+              alt="{{ weather.description }}"
+            />
+            <p class="weather-description">
+              {{ weather.description|capfirst }}
+            </p>
+          </div>
+        </div>
+
+        <div class="weather-details">
+          <div class="detail-card">
+            <h3><i class="fas fa-tint"></i> Nem</h3>
+            <p>%{{ weather.humidity }}</p>
+          </div>
+
+          <div class="detail-card">
+            <h3><i class="fas fa-wind"></i> Rüzgar</h3>
+            <p>{{ weather.wind_speed }} m/s</p>
+          </div>
+        </div>
+      </div>
+      {% endif %} {% if error %}
+      <div class="error-container">
+        <i class="fas fa-exclamation-circle"></i> {{ error }}
+      </div>
+      {% endif %}
+    </div>
+
+    <script src="{% static 'weather/js/script.js' %}"></script>
+  </body>
+</html>

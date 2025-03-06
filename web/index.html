@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Video Ekleme</title>
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background: linear-gradient(
+          to bottom right,
+          #e0f7fa,
+          #b2ebf2
+        ); /* Gradyan arka plan */
+        font-family: "Arial", sans-serif; /* Yazı tipi */
+        margin: 0; /* Varsayılan margin'i sıfırla */
+      }
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3); /* Daha belirgin gölge efekti */
+        border-radius: 15px; /* Kenar yuvarlama */
+        padding: 30px; /* İç boşluk */
+        background-color: white; /* Beyaz arka plan */
+        transition: transform 0.1s; /* Hoverda büyüme efekti */
+      }
+
+      @keyframes moveVideo {
+        0% {
+          transform: translate(0, 0);
+        }
+        50% {
+          transform: translate(15px); /* Orta noktada hafif kaydırma */
+        }
+        100% {
+          transform: translate(0, 0);
+        }
+      }
+      video {
+        margin-top: 20px;
+        border-radius: 15px; /* Video kenar yuvarlama */
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.9); /* Video için gölge efekti */
+        max-width: 100%; /* Ekrana uyumlu boyut */
+        animation: moveVideo 1s ease-in-out infinite; /* 10 saniyede bir döngüde hareket */
+      }
+      .button-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+      }
+      button {
+        margin: 10px;
+        padding: 15px 25px;
+        font-size: 18px;
+        border: none;
+        border-radius: 25px; /* Daha yuvarlak butonlar */
+        cursor: pointer;
+        transition: background-color 0.2s, transform 0.2s; /* Hover ve kayma animasyonu */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Buton için gölge efekti */
+        font-weight: bold; /* Kalın yazı tipi */
+      }
+      #button1 {
+        background-color: #4caf50; /* Yeşil arka plan */
+        color: white;
+      }
+      #button1:hover {
+        background-color: #45a049; /* Hover efekti */
+        transform: translateY(-3px); /* Hoverda yukarı kaydırma */
+      }
+      #button2 {
+        background-color: #008cba; /* Mavi arka plan */
+        color: white;
+      }
+      #button2:hover {
+        background-color: #007bb5; /* Hover efekti */
+        transform: translateY(-3px); /* Hoverda yukarı kaydırma */
+      }
+      .message {
+        margin-top: 10px;
+        font-size: 20px; /* Mesaj yazı boyutu */
+        color: #333; /* Koyu gri mesaj rengi */
+        display: none;
+        text-align: center; /* Mesajı ortala */
+        font-weight: bold; /* Kalın yazı tipi */
+      }
+      #emoji {
+        position: absolute;
+        font-size: 100px; /* Emoji boyutunu artırdık */
+        display: none; /* Başlangıçta gizli */
+      }
+    </style>
+  </head>
+  <body>
+    <audio id="soundEffect" src="sound.mp3" preload="auto"></audio>
+    <audio id="effectSound" src="effect.mp3" preload="auto"></audio>
+    <div class="container">
+      <video width="300" controls autoplay muted>
+        <source src="idontneed.mp4" type="video/mp4" />
+        Tarayıcınız video etiketini desteklemiyor.
+      </video>
+      <div class="button-container">
+        <button id="button1">beni götümden sikin</button>
+        <button id="button2">100 bench atabiliyorum</button>
+      </div>
+      <div class="message" id="message"></div>
+      <!-- Mesaj alanı -->
+    </div>
+
+    <script>
+      let totalEmojisCreated = 0; // Toplam oluşturulan emoji sayısı
+
+      document.getElementById("button1").addEventListener("click", function () {
+        document.getElementById("message").style.display = "block"; // Mesajı göster
+
+        // Ses dosyasını çal ve ses seviyesini %30'a ayarla
+        const effectSound = document.getElementById("effectSound");
+        effectSound.volume = 0.5; // Ses seviyesini %30
+        effectSound.currentTime = 0; // Ses dosyasını başa al
+        effectSound.play(); // Ses dosyasını çal
+
+        // Toplam 9 emoji oluşturulacak
+        if (totalEmojisCreated < 8) {
+          const emoji = document.createElement("div");
+          emoji.innerText = "😜";
+          emoji.id = "emoji";
+          document.body.appendChild(emoji); // Emojiyi doğrudan body'ye ekle
+          moveEmoji(emoji);
+          totalEmojisCreated++; // Oluşturulan emoji sayısını artır
+        }
+      });
+
+      document.getElementById("button2").addEventListener("click", function () {
+        // Ses dosyasını çal
+        const sound = document.getElementById("soundEffect");
+        sound.volume = 0.25; // Ses seviyesini %25
+        sound.currentTime = 0; // Ses dosyasını başa al
+        sound.play(); // Ses dosyasını çal
+
+        // Butonun kayacağı mesafe
+        const moveDistance = 250; // Butonun kayacağı mesafe
+        const randomX = Math.random() * moveDistance * 3 - moveDistance; // Rastgele X kaydırma
+        const randomY = Math.random() * moveDistance * 1 - moveDistance; // Rastgele Y kaydırma
+        this.style.transition = "transform 0.4s"; // Kayma animasyonu süresi
+        this.style.transform = `translate(${randomX}px, ${randomY}px)`; // Butonu rastgele bir yere kaydır
+      });
+
+      function moveEmoji(emoji) {
+        // Rastgele başlangıç konumu
+        const startX = Math.random() * (window.innerWidth - 100); // Ekranın genişliğine göre ayarla
+        const startY = Math.random() * (window.innerHeight - 100); // Ekranın yüksekliğine göre ayarla
+        emoji.style.left = `${startX}px`;
+        emoji.style.top = `${startY}px`;
+        emoji.style.display = "block"; // Emojiyi göster
+
+        // Hareket yönü ve hızı
+        let moveX = (Math.random() - 0.5) * 3; // X yönünde rastgele hareket
+        let moveY = (Math.random() - 0.5) * 3; // Y yönünde rastgele hareket
+
+        const animate = () => {
+          // Mevcut konumu al
+          const currentX = parseFloat(emoji.style.left);
+          const currentY = parseFloat(emoji.style.top);
+
+          // Yeni konumu ayarlama
+          emoji.style.left = `${currentX + moveX}px`;
+          emoji.style.top = `${currentY + moveY}px`;
+
+          // Ekranın sınırlarına çarpma kontrolü
+          if (
+            currentX + moveX < 0 ||
+            currentX + moveX > window.innerWidth - 100
+          ) {
+            moveX *= -1; // Yön değiştir
+          }
+          if (
+            currentY + moveY < 0 ||
+            currentY + moveY > window.innerHeight - 100
+          ) {
+            moveY *= -1; // Yön değiştir
+          }
+
+          // Animasyonu sürekli olarak tekrar et
+          requestAnimationFrame(animate);
+        };
+
+        animate(); // İlk hareketi başlat
+      }
+    </script>
+  </body>
+</html>
